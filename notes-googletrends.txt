@@ -1,0 +1,14 @@
+1283 - only monthly 
+107 and 278 - both monthly and daily 
+tickers no changed 
+
+Do 1283 first 
+for each ticker
+
+for daily set the range 6 months 
+
+format 
+
+MSFT - search in google trends 
+
+inside password 
