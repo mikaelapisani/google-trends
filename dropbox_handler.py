@@ -16,7 +16,6 @@ class DropboxHandler:
         self.CHUNK_SIZE = dropbox_chunck
         self.dbx = dropbox.Dropbox(self.access_token, timeout=self.timeout)
 
-    
     def list_files(self, folder_path):
         files = []
         for entry in self.dbx.files_list_folder(folder_path).entries:

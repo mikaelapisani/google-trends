@@ -28,7 +28,9 @@ class Config:
         self.dropbox_folder_upload=config['dropbox_folder_upload']
         self.dropbox_chunck=int(config['dropbox_chunck'])
         self.dropbox_timeout=float(config['dropbox_timeout'])
-        self.data_folder=config['data_folder']
+        self.tickers_folder=config['tickers_folder']
+        self.data_folder_monthly=config['data_folder_monthly']
+        self.data_folder_daily=config['data_folder_daily']
         self.encoding=config['encoding']
         self.tz=int(config['tz'])
         self.categories=config['categories'].split(',')
@@ -39,5 +41,6 @@ class Config:
         self.backoff_factor=int(config['backoff_factor'])
         self.gtrends_timeout_connect=int(config['gtrends_timeout_connect'])
         self.gtrends_timeout_read=int(config['gtrends_timeout_read'])
+        self.prefix=config['prefix']
 
         
