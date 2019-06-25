@@ -74,7 +74,7 @@ class GTrends:
                 category_type = category_type[1]
                 if (category_type=='monthly'):
                     #download monthly data for all the year ranges
-                    download_all = download_all and self.download_file(ticker, category_name, 
+                    download_all = self.download_file(ticker, category_name, 
                                   year_from + '-01-01 ' + 
                                   year_until + '-12-31',
                                   data_folder_monthly + ticker + '_' 
@@ -82,13 +82,13 @@ class GTrends:
                 else:
                     for year in year_range:
                         #download first daily file for year
-                        download_all = download_all and self.download_file(ticker, category_name, 
+                        download_all = self.download_file(ticker, category_name, 
                                   str(year) + '-01-01 ' + str(year) + '-06-30',
                                   data_folder_daily + ticker + '_' +
                                   category_name + '_1_daily.csv')
                         
                         #download second daily file for year
-                        download_all = download_all and self.download_file(ticker, category_name, 
+                        download_all = self.download_file(ticker, category_name, 
                                   str(year) + '-07-01 ' + str(year) + '-12-31',
                                   data_folder_daily + ticker + '_' +
                                   category_name + '_2_daily.csv')
