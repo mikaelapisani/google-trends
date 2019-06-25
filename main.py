@@ -77,8 +77,10 @@ def main(argv):
         if(process_data):
             p = Processor(config.output_size_mb, dbx)
             p.set_log(log)
-            p.ETL_data(config.data_folder_monthly, config.dropbox_folder_upload_monthly, '_monthly.csv')
-            p.ETL_data(config.data_folder_daily, config.dropbox_folder_upload_daily, '_daily.csv')
+            p.TL_data(config.data_folder_monthly, config.dropbox_folder_upload_monthly, 
+                       config.result_folder, '_monthly.csv')
+            p.TL_data(config.data_folder_daily, config.dropbox_folder_upload_daily, 
+                       config.result_folder, '_daily.csv')
     except Exception as ex:
         log.error('There has been an error while processing data.\n%s' %(ex))
         sys.exit(1)

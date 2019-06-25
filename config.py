@@ -31,6 +31,7 @@ class Config:
         self.tickers_folder=config['tickers_folder']
         self.data_folder_monthly=config['data_folder_monthly']
         self.data_folder_daily=config['data_folder_daily']
+        self.result_folder=config['result_folder']
         self.encoding=config['encoding']
         self.tz=int(config['tz'])
         self.categories=config['categories'].split(',')

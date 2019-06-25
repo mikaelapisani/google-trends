@@ -40,7 +40,7 @@ by year_from and year_to.
  In addition, the date format is transformed from 'Y-M-d' to 'Y-M' in the case of monthly files.   
      
 2. *Handle errors:* As Google trends has a limit for the amount of files that can be downloaded per day, which is not fixed. 
-In case that the file could not be downloaded an error message would appear in the log. And next time that the script is executed 
+In case that the file could not be downloaded an error message would appear in the log and the excecution would be stopped. Next time that the script is executed 
 it would perform another attempt for this file. 
 In order to check if the file should be downloaded or not, it is checked if the file is already in the local folder, 
 in that case it is not downloaded. The script output indicates if there are more files to download. In the case that all 
@@ -65,11 +65,17 @@ For reasons of optimization, the transformation is done during the extraction an
 In the extraction is used to clean the data and in the loading to append the content of the files into one. 
 
 ### Load
-The loading step consist on reading the local files for monthly and daily data and generate files that contains 
-the information for all the months and all the days. The information is append into one file until reaching 
+The loading step consist on reading the local files for monthly and daily data and generate 2 different types of files. One that contains 
+the information for all the months and other type for all the days. The information is appended into one file until reaching 
 the threshold configured in ``output_size_mb``.    
-Once the threshold is reached, the file is uploaded to dropbox, and start to generate a new file. 
+Once the threshold is reached, the file is uploaded to Dropbox, and start to generate a new file. 
 This process is repeated until all the files have been processed.  
+
+**Observations**
+1. *Transformation:* The appended information is sorted by date before uploading the file the information.    
+2. *Handle errors:* In case that the upload to Dropbox fails, the result file would be saved in the results directory. 
+These files should be uploaded manually to dropbox. 
+
 
 #### Execution: 
 
@@ -90,6 +96,8 @@ python main.py -c 'config.properties' --process=true
 - *tickers_folder:* Local folder's path where ticker file is stored.  
 - *data_folder_monthly:* Local folder's path for monthly data.  
 - *data_folder_daily:* Local folder's path for daily data.  
+- *result_folder:* Local folder's path for results files.
+Files are saved temporary in this folder before uploading to Dropbox. 
 
 **Google Trends Configuration**    
 - *encoding:* Encoding used for download the data.  

@@ -9,8 +9,11 @@ from pytrends.request import TrendReq
 import pandas as pd
 from os import path
 
+
+
 class GTrends:
-    def __init__(self, encoding, tz, timeout_connect, timeout_read, retries, backoff_factor, geo):
+    def __init__(self, encoding, tz, timeout_connect, timeout_read, retries, 
+                 backoff_factor, geo):
         #initialize google trends connector
         self.pytrends = TrendReq(hl=encoding, 
                                  tz=tz,
@@ -39,6 +42,7 @@ class GTrends:
             if (df.shape[0]==0):
                 self.log.info('Empty file for ticker %s, category %s, frame %s' 
                           %(ticker, category_name, frame))
+                df.to_csv(local_path, index=False) #save an empty file so next time do not make the request
                 return True
             if 'isPartial' in df.columns:
                 df.drop('isPartial', axis=1, inplace=True)
@@ -50,8 +54,8 @@ class GTrends:
             df.to_csv(local_path, index=False)
             return True
         except Exception as ex:
-            self.log.error('There has been an error downloading tracker %s, category %s, frame %s\n%s',
-                           ticker, category_name, frame, ex)
+            self.log.error('There has been an error downloading tracker %s, category %s, frame %s ex:%s\n%s',
+                           ticker, category_name, frame, type(ex), ex)
             return False
     
     
@@ -88,6 +92,12 @@ class GTrends:
                                   str(year) + '-07-01 ' + str(year) + '-12-31',
                                   data_folder_daily + ticker + '_' +
                                   category_name + '_2_daily.csv')
+                if(not download_all):
+                   break;
+                   
+            if(not download_all):
+                   break;
+                   
         return download_all
   
                         
