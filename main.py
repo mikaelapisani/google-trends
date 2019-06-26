@@ -13,6 +13,8 @@ from dropbox_handler import DropboxHandler
 import sys
 import getopt
 import logging
+import os.path
+from os import path
 
 def info():
     print('Importing data: python main.py --config=config.properties --import=true')        
@@ -59,14 +61,17 @@ def main(argv):
         #import data from Google trends
         if (import_data):
             #download tickers file
-            dbx.download_file(config.tickers_path, config.tickers_folder)
+            if (not path.exists(config.tickers_folder)):
+                dbx.download_file(config.tickers_path, config.tickers_folder)
             
             #download gtrends data
             gt = GTrends(config.encoding, config.tz, config.gtrends_timeout_connect, 
-                         config.gtrends_timeout_read, config.retries, config.backoff_factor, config.geo)
+                         config.gtrends_timeout_read, config.retries, config.backoff_factor, 
+                         config.geo, dbx)
             gt.set_log(log)
             download_all = gt.import_data(config.tickers_folder, config.year_from, config.year_until,
-                       config.categories, config.data_folder_monthly, config.data_folder_daily)
+                       config.categories, config.data_folder_monthly, config.data_folder_daily,
+                       config.data_folder_monthly_dropbox, config.data_folder_daily_dropbox)
             print('download_all=%s' % str(download_all))
     except Exception as ex:
         log.error('There has been an error while importing data.\n%s' %(ex))

@@ -1,3 +1,6 @@
+bin/
+pyvenv.cfg
+
 *.iml
 *.idea
 .DS_Store

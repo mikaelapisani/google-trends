@@ -19,71 +19,45 @@ It is used the library ``pytrends``.
 - config.properties: Configuration file. 
 - requirements.txt: Requirements for running the environment.   
 
-### Extract
- For the extraction step, csv files are imported from Google Trends, saving them locally in two directories.
- One directory for monthly files and another for daily files. 
- A pseudo-code is provided to understand how the files are downloaded.   
-```python
-	for ticker in ticker:
-		for category in categories:
-			if (category_type=='monthly'):
-				download_monthly(year_from, year_to, ticker, category)
-			else:
-				download_daily(year_from, year_to, ticker, category)
-```
-  
-In summary, for each ticker,category and category type the data is downloaded for the configured frame composed 
-by year_from and year_to.   
 
- **Observations:**    
-1. *Clean data:* In order to clean the data, a transformation is used in this script, keeping only the columns of interest. 
- In addition, the date format is transformed from 'Y-M-d' to 'Y-M' in the case of monthly files.   
-     
-2. *Handle errors:* As Google trends has a limit for the amount of files that can be downloaded per day, which is not fixed. 
-In case that the file could not be downloaded an error message would appear in the log and the excecution would be stopped. Next time that the script is executed 
-it would perform another attempt for this file. 
-In order to check if the file should be downloaded or not, it is checked if the file is already in the local folder, 
-in that case it is not downloaded. The script output indicates if there are more files to download. In the case that all 
-the files have been downloaded, the output would look as follows:     
+## Clone repository
+The code is available in github in the following url: https://github.com/mikaelapisani/google-trends. In order to clone the repository in your machine execute:   
 ```bash
-download_all=True 
-```
-Otherwise, it would be:    
-```bash
-download_all=False
+git clone https://github.com/mikaelapisani/google-trends.git
 ```
 
-#### Execution: 
+## Configure environment
+
+### Python
+
+Python 3 is requeried, running the script in a virtualenv with the necessaries dependencies. Alternative, it is provided a Dockerfile in order to run the script in a docker container.
+
+### Docker
+Build image:   
+```bash
+docker build -t gtrends-etl .
+```      
+### Virtualenv
+Substitute {google-trends-path} by the path where the code is downloaded. 
+```bash
+python3 -m venv {google-trends-path}
+source {google-trends-path}/bin/activate
+cd {google-trends-path} 
+pip install --upgrade pip
+pip install -r requirements.txt
+```
+It is necessary to specify 2 volumes, which are the directories for the temporary folders to save data,     
+- data folder: will contain monthly and daily information. It should have 2 directories inside: monthly and daily.  
+- result folder: In case that the upload to dropbox fails, the results files will be at that directory). 
 
 ```bash
-python main.py -c 'config.properties' --import=true
-```
+docker run -ti -v <data_dir>:/root/data -v <masters_dir>:/root/results gtrends-etl bash
+```     
+Once inside the container follow the execution manual to execute the program.     
+The configuration path would be at '/root/google-trends/config.properties'  
 
 
-### Transform
-For reasons of optimization, the transformation is done during the extraction and loading steps. 
-In the extraction is used to clean the data and in the loading to append the content of the files into one. 
-
-### Load
-The loading step consist on reading the local files for monthly and daily data and generate 2 different types of files. One that contains 
-the information for all the months and other type for all the days. The information is appended into one file until reaching 
-the threshold configured in ``output_size_mb``.    
-Once the threshold is reached, the file is uploaded to Dropbox, and start to generate a new file. 
-This process is repeated until all the files have been processed.  
-
-**Observations**
-1. *Transformation:* The appended information is sorted by date before uploading the file the information.    
-2. *Handle errors:* In case that the upload to Dropbox fails, the result file would be saved in the results directory. 
-These files should be uploaded manually to dropbox. 
-
-
-#### Execution: 
-
-```bash
-python main.py -c 'config.properties' --process=true
-```
-
-## Configuration:
+### Configuration:
 **Log Configuration**  
 - log_level: Log level (INFO, WARNING, ERROR)
 
@@ -93,7 +67,11 @@ python main.py -c 'config.properties' --process=true
 - *dropbox_chunck:* Chunk size to send data to Dropbox.  
 - *tickers_path:* Path in Dropbox where the tickers file is located.  
 - *dropbox_folder_upload:* Path for upload result files.  
-- *tickers_folder:* Local folder's path where ticker file is stored.  
+- *data_folder_monthly_dropbox:* Path for raw monthly data.
+- *data_folder_daily_dropbox:* Path for raw daily data.
+
+**Local Configuration**
+- *tickers_folder:* Local folder's path where ticker file is stored locally. Observe that if you want to download other tickers' list different from the one that is in Dropbox, you can edit this file locally with the list wanted. This can be convinient when you want a smaller list of tickers.   
 - *data_folder_monthly:* Local folder's path for monthly data.  
 - *data_folder_daily:* Local folder's path for daily data.  
 - *result_folder:* Local folder's path for results files.
@@ -107,35 +85,71 @@ The format should be like: category_number:category_type,category_number:categor
 Example: 1283:monthly,107:monthly,107:daily,278:monthly,278:daily  
 - *year_from:* Year from which the data should be downloaded.  
 - *year_until:* Year until which the data should be downloaded.  
-- *geo:* Indicates geographical area from the data. In the case to want all areas, this field should be empty.  
-- *gtrends_timeout_connect:* Timeout for opening HTTP connection with Google Trends.   
+- *geo:* Indicates geographical area from the data. In the case to want all areas, this field should be empty.  - *gtrends_timeout_connect:* Timeout for opening HTTP connection with Google Trends.   
 - *gtrends_timeout_read:* Timeout for HTTP connection for reading the data to download.  
 - *retries:* Indicates how many times should retry when the connection fails.   
 - *backoff_factor:* Seconds between attempts after the second retry.  
 - *output_size_mb:* Threshold in MB for the files to be uploaded.  
 - *prefix:* Prefix for the result files.  
 
+### Extract
+ For the extraction step, csv files are imported from Google Trends, saving them locally in two temporary directories. One directory for monthly files and another for daily files. After downloaded each file is uploaded to dropbox. The temprary files are removed from the local directory once uploaded to dropbox.    
+
+ A pseudo-code is provided to understand how the files are downloaded.   
+```python
+	for ticker in ticker:
+		for category in categories:
+			if (category_type=='monthly'):
+				download_monthly(year_from, year_to, ticker, category)
+			else:
+				download_daily(year_from, year_to, ticker, category)
+```
+  
+In summary, for each ticker,category and category type the data is downloaded for the configured frame composed by year_from and year_to and uploaded to dropbox.   
+
+ **Observations:**    
+1. *Clean data:* In order to clean the data, a transformation is used in this script, keeping only the columns of interest. In addition, the date format is transformed from 'Y-M-d' to 'Y-M' in the case of monthly files.   
+     
+2. *Handle errors:*    
+- As Google trends has a limit for the amount of files that can be downloaded per day, which is not fixed. 
+In case that the file could not be downloaded an error message would appear in the log and the excecution would be stopped. Next time that the script is executed, it would perform another attempt for this file.    
+- In order to check if the file should be downloaded or not, it is checked if the file is already in the dropbox folder, in that case it is not downloaded.   
+- In case that the upload to Dropbox fails, the files would be availabe in the data folder configured for monthly and daily. Those files should be uploaded to dropbox manually in the corresponding directory before continue with the process.  
+- The script output indicates if there are more files to download. In the case that all the files have been downloaded, the output would look as follows:     
+```bash
+download_all=True 
+```
+Otherwise, it would be:    
+```bash
+download_all=False
+```
+
+#### Execution: 
+
+```bash
+python main.py -c 'config.properties' --import=true &> output
+```
+
+The file output will contain the output from the execution.
+
+### Transform
+For reasons of optimization, the transformation is done during the extraction and loading steps. 
+In the extraction is used to clean the data and in the loading to append the content of the files into one. 
+
+### Load
+The loading step consist on reading the files for monthly and daily data and generate 2 different types of files. One that contains the information for all the months and other for all the days. The information is appended into one file until reaching the threshold configured in ``output_size_mb``.    
+Once the threshold is reached, the file is uploaded to Dropbox, and start to generate a new file. 
+This process is repeated until all the files have been processed.  
+
+**Observations**
+1. *Transformation:* The appended information is sorted by date before uploading the file the information.    
+2. *Handle errors:* In case that the upload to Dropbox fails, the result file would be saved in the results directory. Those files should be uploaded manually to dropbox. 
 
 
+#### Execution: 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+```bash
+python main.py -c 'config.properties' --process=true &> output
+```
+The file output will contain the output from the execution.
+s

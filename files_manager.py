@@ -10,6 +10,16 @@ import numpy as np
 
 import math
 
+def upload_file(file_from, file_to, dbx):
+    upload = False
+    try:
+       dbx.upload_file(file_from, file_to)
+       upload = True
+    except Exception as err:
+        print('ERROR: Failed to upload %s to %s\n%s' %(file_from, file_to, err))
+    if upload:
+       os.remove(file_from)
+           
 class FilesManager():
     def __init__(self, output_size_mb):
         self.output_size_mb = output_size_mb
@@ -29,21 +39,15 @@ class FilesManager():
         chunks = math.trunc((mem_usage_1 + mem_usage_2)/self.output_size_mb)
         return (chunks > 0)
 
+    
     #save dataframe into file and upload to dropbox
     #in case of error in upload, the local file would not be deleted
     def upload_file(self, local_folder, filename, dropbox_folder, df, dbx):
         file_from = local_folder + filename
         file_to = dropbox_folder + filename
         df.to_csv(file_from, index=False)
+        upload_file(file_from, file_to)
        
-        upload = True
-        try:
-           dbx.upload_file(file_from, file_to)
-        except Exception as err:
-            print('ERROR: Failed to upload %s to %s\n%s' %(file_from, file_to, err))
-            upload = False
-        if upload:
-           os.remove(file_from)
 
     #devide data into chunks and upload to dropbox    
     def save_data(self, local_folder, prefix, sufix, dropbox_folder, df, idx, dbx):

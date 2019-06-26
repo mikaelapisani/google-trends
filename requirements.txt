@@ -1,1 +1,6 @@
 pytrends==4.6.0
+pandas 
+numpy
+dropbox
+property
+

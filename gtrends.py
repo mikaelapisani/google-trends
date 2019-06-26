@@ -7,13 +7,12 @@ Created on Thu Jun 20 14:46:16 2019
 """
 from pytrends.request import TrendReq
 import pandas as pd
-from os import path
-
+import files_manager
 
 
 class GTrends:
     def __init__(self, encoding, tz, timeout_connect, timeout_read, retries, 
-                 backoff_factor, geo):
+                 backoff_factor, geo, dbx):
         #initialize google trends connector
         self.pytrends = TrendReq(hl=encoding, 
                                  tz=tz,
@@ -21,6 +20,7 @@ class GTrends:
                                  retries=retries,
                                  backoff_factor=backoff_factor)
         self.geo = geo
+        self.dbx = dbx
         
     def set_log(self, log):
         self.log = log
@@ -30,8 +30,6 @@ class GTrends:
     #if file already exists, do not download again
     def download_file(self, ticker, category_name, frame, local_path, monthly=False):
         try:
-            if (path.exists(local_path)):
-                return True
             self.pytrends.build_payload([ticker], cat=category_name, 
                            timeframe=frame, 
                            geo=self.geo, gprop='')
@@ -61,7 +59,8 @@ class GTrends:
     
     #for each ticker, download data monthly and daily for each category
     def import_data(self, tickers_path, year_from, year_until,categories, 
-                    data_folder_monthly, data_folder_daily):
+                    data_folder_monthly, data_folder_daily, 
+                    data_folder_monthly_dropbox, data_folder_daily_dropbox):
         lines = open(tickers_path).readlines()[1:]
         year_range = range(int(year_from),int(year_until))
         download_all = True
@@ -74,26 +73,57 @@ class GTrends:
                 category_type = category_type[1]
                 if (category_type=='monthly'):
                     #download monthly data for all the year ranges
+                    file_name = ticker + '_' + category_name + '_monthly.csv'
+                    dropbox_path = data_folder_monthly_dropbox + file_name                                  
+                    if (self.dbx.file_exists(data_folder_monthly_dropbox, file_name)):
+                        continue
+                    
+                    frame = year_from + '-01-01 ' + year_until + '-12-31'
                     download_all = self.download_file(ticker, category_name, 
-                                  year_from + '-01-01 ' + 
-                                  year_until + '-12-31',
-                                  data_folder_monthly + ticker + '_' 
-                                  + category_name + '_monthly.csv', True)
+                                                      frame, 
+                                                      data_folder_monthly + file_name, 
+                                                      True)
+                    if(download_all):
+                        files_manager.upload_file(data_folder_monthly + file_name, 
+                                               dropbox_path, 
+                                               self.dbx)
+                    else:
+                        break;
                 else:
                     for year in year_range:
                         #download first daily file for year
+                        file_name = ticker + '_' + category_name + '_1_daily.csv'  
+                        if (self.dbx.file_exists(data_folder_daily_dropbox, file_name)):
+                            continue
+                        
+                        frame = str(year) + '-01-01 ' + str(year) + '-06-30'
                         download_all = self.download_file(ticker, category_name, 
-                                  str(year) + '-01-01 ' + str(year) + '-06-30',
-                                  data_folder_daily + ticker + '_' +
-                                  category_name + '_1_daily.csv')
+                                                          frame, 
+                                                          data_folder_daily + file_name)
+                        
+                        if(download_all):
+                            files_manager.upload_file(data_folder_daily + file_name, 
+                                                           data_folder_daily_dropbox + file_name, 
+                                                           self.dbx)
+                        else:
+                            break;
                         
                         #download second daily file for year
+                        file_name = ticker + '_' + category_name + '_2_daily.csv'
+                        if (self.dbx.file_exists(data_folder_daily_dropbox, file_name)):
+                            continue
+                        frame = str(year) + '-07-01 ' + str(year) + '-12-31'
                         download_all = self.download_file(ticker, category_name, 
-                                  str(year) + '-07-01 ' + str(year) + '-12-31',
-                                  data_folder_daily + ticker + '_' +
-                                  category_name + '_2_daily.csv')
-                if(not download_all):
-                   break;
+                                  frame,
+                                  data_folder_daily + file_name)
+                        
+                        if(download_all):
+                            files_manager.upload_file(data_folder_daily + file_name, 
+                                                           data_folder_daily_dropbox + file_name , 
+                                                           self.dbx)
+                        else:
+                            break;
+               
                    
             if(not download_all):
                    break;

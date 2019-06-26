@@ -31,6 +31,8 @@ class Config:
         self.tickers_folder=config['tickers_folder']
         self.data_folder_monthly=config['data_folder_monthly']
         self.data_folder_daily=config['data_folder_daily']
+        self.data_folder_monthly_dropbox=config['data_folder_monthly_dropbox']
+        self.data_folder_daily_dropbox=config['data_folder_daily_dropbox']
         self.result_folder=config['result_folder']
         self.encoding=config['encoding']
         self.tz=int(config['tz'])

@@ -5,7 +5,7 @@ Created on Thu Jun 20 14:45:32 2019
 
 @author: mikaelapisanileal
 """
-import glob
+
 import pandas as pd
 from files_manager import FilesManager
 
@@ -20,13 +20,16 @@ class Processor:
         self.log = log
         self.files_manager.set_log(log)
         
-    def TL_data(self, data_folder, dropbox_folder_upload, result_folder, sufix):
-        filenames = glob.glob(data_folder + '*.csv')
-        dfs = [pd.read_csv(filename) for filename in filenames]
+    def TL_data(self, data_folder_dropbox, dropbox_folder_upload, data_folder, 
+                result_folder, sufix):
+        filenames = self.dbx.list_files(data_folder_dropbox)
         final_df = pd.DataFrame()
         index = 0
-        #for each df, append until reach threashold
-        for df in dfs:
+        #for each file, append until reach threashold
+        for filename in filenames:
+            local_path = data_folder_dropbox + filename
+            self.dbx.download_file(local_path, data_folder + filename)
+            df = pd.read_csv(local_path)
             if (df.shape[0]==0):
                 continue
             
