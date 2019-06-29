@@ -8,6 +8,7 @@ Created on Thu Jun 20 14:45:32 2019
 
 import pandas as pd
 from files_manager import FilesManager
+import os
 
 class Processor:
     def __init__(self, prefix, output_size_mb, dbx):       
@@ -21,15 +22,19 @@ class Processor:
         self.files_manager.set_log(log)
         
     def TL_data(self, data_folder_dropbox, dropbox_folder_upload, data_folder, 
-                result_folder, sufix):
-        filenames = self.dbx.list_files(data_folder_dropbox)
+                result_folder, sufix, category):
+        filenames = self.dbx.list_files(data_folder_dropbox + category)
         final_df = pd.DataFrame()
         index = 0
         #for each file, append until reach threashold
         for filename in filenames:
-            local_path = data_folder_dropbox + filename
-            self.dbx.download_file(local_path, data_folder + filename)
+            path = data_folder_dropbox + filename
+            local_path = data_folder + filename
+            self.dbx.download_file(path, local_path)
             df = pd.read_csv(local_path)
+            ticker = df['ticker'][0]
+            df['count'] = df[ticker]
+            df.drop(ticker, axis=1,inplace=True)
             if (df.shape[0]==0):
                 continue
             
@@ -45,6 +50,7 @@ class Processor:
                 final_df = df
             else:
                 final_df = final_df.append(df)
+            os.remove(local_path)
         
         #save last chunck
         if (final_df.shape[0]>0):
