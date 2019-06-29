@@ -101,13 +101,13 @@ class GTrends:
                     for year in year_range:
                         #download first daily file for year
                         file_name = ticker + '_' + category_name + '_1_daily.csv'  
-                        if (self.dbx.file_exists(data_folder_daily_dropbox, file_name)):
+                        if (self.dbx.file_exists(dropbox_path, file_name)):
                             continue
                         
                         frame = str(year) + '-01-01 ' + str(year) + '-06-30'
                         download_all = self.download_file(ticker, category_name, 
                                                           frame, 
-                                                          dropbox_path + '/' + file_name)
+                                                          data_folder_daily + file_name)
                         
                         if(download_all):
                             files_manager.upload_file(data_folder_daily + file_name, 
