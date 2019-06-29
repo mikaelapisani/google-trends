@@ -25,7 +25,8 @@ class Config:
         self.access_token = config['access_token']
         self.output_size_mb=int(config['output_size_mb'])
         self.tickers_path=config['tickers_path']
-        self.dropbox_folder_upload=config['dropbox_folder_upload']
+        self.dropbox_folder_upload_monthly=config['dropbox_folder_upload_monthly']
+        self.dropbox_folder_upload_daily=config['dropbox_folder_upload_daily']
         self.dropbox_chunck=int(config['dropbox_chunck'])
         self.dropbox_timeout=float(config['dropbox_timeout'])
         self.tickers_folder=config['tickers_folder']
@@ -33,7 +34,10 @@ class Config:
         self.data_folder_daily=config['data_folder_daily']
         self.data_folder_monthly_dropbox=config['data_folder_monthly_dropbox']
         self.data_folder_daily_dropbox=config['data_folder_daily_dropbox']
-        self.result_folder=config['result_folder']
+        self.result_folder_monthly=config['result_folder_monthly']
+        self.result_folder_daily=config['result_folder_daily']
+        self.tmp_folder_monthly=config['tmp_folder_monthly']
+        self.tmp_folder_daily=config['tmp_folder_daily']
         self.encoding=config['encoding']
         self.tz=int(config['tz'])
         self.categories=config['categories'].split(',')
