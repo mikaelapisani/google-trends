@@ -8,7 +8,7 @@ This project consists on an ETL (Extract, Transform, Load) process.
 - Load: upload files to Dropbox in chunks of 5GB.  
 
 ## Files and scripts
-- main.py: Main script to import,process and load the data.
+- main.py: Main script to import, process and load the data.
 - config.py: Defines configuration object that contains all values configured in the config.properties file.
 - dropbox_handler.py: Contains the code to download/upload files to Dropbox.  It uses the library ``dropbox``.
 - files_manager.py: Contains the code to manage files and divide them into chunks.
@@ -56,6 +56,50 @@ docker run -ti -v <data_dir>:/root/data -v <masters_dir>:/root/results gtrends-e
 Once inside the container follow the execution manual to execute the program.     
 The configuration path would be at '/root/google-trends/config.properties'  
 
+
+### TTU cluster
+1. It is necessary to have installed conda. 
+   Follow these guide if it is not installed:    
+   http://www.depts.ttu.edu/hpcc/userguides/application_guides/python.local_installation.php    
+   
+2. Create virtualenv:    
+    ```bash
+    . $HOME/conda/etc/profile.d/conda.sh
+    conda activate
+    cd $HOME/google-trends
+    pip install --upgrade pip
+    pip install -r requirements.txt
+    conda deactivate
+    ```  
+3. Create directories for tickers_folder, data_folder_monthly, data_folder_daily, result_folder_monthly, result_folder_daily, tmp_folder_monthly and tmp_folder_daily. Suggested paths: 
+```bash
+mkdir $HOME/data/               # tickers_folder
+mkdir $HOME/data/monthly/       # data_folder_monthly
+mkdir $HOME/data/daily/         # data_folder_daily
+mkdir -p $HOME/results/monthly/ # result_folder_monthly
+mkdir $HOME/results/daily/      # result_folder_daily
+mkdir $HOME/tmp/monthly/        # tmp_folder_monthly
+mkdir $HOME/tmp/daily/          # tmp_folder_daily
+```
+
+4. Edit config.properties file with the corresponding paths.  
+  
+5. To run the import step, execute:  
+     ```bash
+    qsub $HOME/google-trends/mpi/mpi_import.sh
+    ```   
+6. To run the process step, edit mpi_process.sh with the correspondent parameter for category, for example: 
+
+For import:  
+    ```bash
+    export CATEGORY=107
+    sed "s/CATEGORY/$CATEGORY/g" $HOME/Google-trends/mpi/mpi_process.sh > $HOME/google-trends/mpi/mpi_$CATEGORY.sh
+    ```
+
+7. Execute the following command to execute the process step for the category edited before:           
+    ```bash
+    qsub $HOME/google-trends/mpi/mpi_$CATEGORY.sh
+    ```   
 
 ### Configuration:
 **Log Configuration**  
