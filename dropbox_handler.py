@@ -15,11 +15,17 @@ class DropboxHandler:
         self.timeout = timeout
         self.CHUNK_SIZE = dropbox_chunck
         self.dbx = dropbox.Dropbox(self.access_token, timeout=self.timeout)
-
+    
     def list_files(self, folder_path):
         files = []
-        for entry in self.dbx.files_list_folder(folder_path).entries:
-            files.append(entry.name)
+        result = self.dbx.files_list_folder(folder_path)
+        more = True
+        while(more):
+            more = result.has_more
+            for entry in result.entries:
+                files.append(entry.name)
+            result = self.dbx.files_list_folder_continue(result.cursor)
+            
         return files
          
     def download_file(self, filepath, localname):
@@ -75,3 +81,11 @@ class DropboxHandler:
     def file_exists(self, folder_path, filename):
         result = self.dbx.files_search(folder_path, filename)
         return (len(result.matches)!=0)
+    
+    def delete_file(self, filepath):
+        self.dbx.files_delete(filepath)
+  
+
+
+
+
