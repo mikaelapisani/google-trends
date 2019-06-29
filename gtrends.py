@@ -72,10 +72,14 @@ class GTrends:
                 category_name = category_type[0]
                 category_type = category_type[1]
                 if (category_type=='monthly'):
+                    dropbox_path = data_folder_monthly_dropbox  + category_name 
+                    if (not self.dbx.folder_exists(dropbox_path)):
+                        self.log.info('Create folder ' + dropbox_path)
+                        self.dbx.create_folder(dropbox_path)
+                        
                     #download monthly data for all the year ranges
-                    file_name = ticker + '_' + category_name + '_monthly.csv'
-                    dropbox_path = data_folder_monthly_dropbox + file_name                                  
-                    if (self.dbx.file_exists(data_folder_monthly_dropbox, file_name)):
+                    file_name = ticker + '_' + category_name + '_monthly.csv'                            
+                    if (self.dbx.file_exists(dropbox_path, file_name)):
                         continue
                     
                     frame = year_from + '-01-01 ' + year_until + '-12-31'
@@ -85,11 +89,15 @@ class GTrends:
                                                       True)
                     if(download_all):
                         files_manager.upload_file(data_folder_monthly + file_name, 
-                                               dropbox_path, 
+                                               dropbox_path + '/' + file_name, 
                                                self.dbx)
                     else:
                         break;
                 else:
+                    dropbox_path = data_folder_daily_dropbox + category_name
+                    if (not self.dbx.folder_exists(dropbox_path)):
+                        self.dbx.create_folder(dropbox_path)
+                        
                     for year in year_range:
                         #download first daily file for year
                         file_name = ticker + '_' + category_name + '_1_daily.csv'  
@@ -99,18 +107,18 @@ class GTrends:
                         frame = str(year) + '-01-01 ' + str(year) + '-06-30'
                         download_all = self.download_file(ticker, category_name, 
                                                           frame, 
-                                                          data_folder_daily + file_name)
+                                                          dropbox_path + '/' + file_name)
                         
                         if(download_all):
                             files_manager.upload_file(data_folder_daily + file_name, 
-                                                           data_folder_daily_dropbox + file_name, 
+                                                           dropbox_path + '/' + file_name, 
                                                            self.dbx)
                         else:
                             break;
                         
                         #download second daily file for year
                         file_name = ticker + '_' + category_name + '_2_daily.csv'
-                        if (self.dbx.file_exists(data_folder_daily_dropbox, file_name)):
+                        if (self.dbx.file_exists(dropbox_path, file_name)):
                             continue
                         frame = str(year) + '-07-01 ' + str(year) + '-12-31'
                         download_all = self.download_file(ticker, category_name, 
@@ -119,7 +127,7 @@ class GTrends:
                         
                         if(download_all):
                             files_manager.upload_file(data_folder_daily + file_name, 
-                                                           data_folder_daily_dropbox + file_name , 
+                                                           dropbox_path + file_name , 
                                                            self.dbx)
                         else:
                             break;
