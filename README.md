@@ -76,6 +76,10 @@ The configuration path would be at '/root/google-trends/config.properties'
 - *data_folder_daily:* Local folder's path for daily data.  
 - *result_folder:* Local folder's path for results files.
 Files are saved temporary in this folder before uploading to Dropbox. 
+- *result_folder_monthly:* Local folder's path for monthly results files.
+- *result_folder_daily:* Local folder's path for daily results files.
+- *tmp_folder_monthly:* Temporary folder's path to download raw monthly data from Dropbox to process. 
+- *tmp_folder_daily:* Temporary folder's path to download raw daily data from Dropbox to process. 
 
 **Google Trends Configuration**    
 - *encoding:* Encoding used for download the data.  
@@ -91,9 +95,10 @@ Example: 1283:monthly,107:monthly,107:daily,278:monthly,278:daily
 - *backoff_factor:* Seconds between attempts after the second retry.  
 - *output_size_mb:* Threshold in MB for the files to be uploaded.  
 - *prefix:* Prefix for the result files.  
+   
 
 ### Extract
- For the extraction step, csv files are imported from Google Trends, saving them locally in two temporary directories. One directory for monthly files and another for daily files. After downloaded each file is uploaded to dropbox. The temprary files are removed from the local directory once uploaded to dropbox.    
+ For the extraction step, csv files are imported from Google Trends, saving them locally in two temporary directories. One directory for monthly files and another for daily files. After downloaded each file is uploaded to dropbox. The temporary files are removed from the local directory once uploaded to dropbox.    
 
  A pseudo-code is provided to understand how the files are downloaded.   
 ```python
@@ -106,9 +111,10 @@ Example: 1283:monthly,107:monthly,107:daily,278:monthly,278:daily
 ```
   
 In summary, for each ticker,category and category type the data is downloaded for the configured frame composed by year_from and year_to and uploaded to dropbox.   
+In dropbox there would be 2 folders: monthly and daily. Inside each folder, there would be a folder per category, and inside this last folder the downloaded files would be available.   
 
  **Observations:**    
-1. *Clean data:* In order to clean the data, a transformation is used in this script, keeping only the columns of interest. In addition, the date format is transformed from 'Y-M-d' to 'Y-M' in the case of monthly files.   
+1. *Data cleaning:* In order to clean the data, a transformation is used in this script, keeping only the columns of interest. In addition, the date format is transformed from 'Y-M-d' to 'Y-M' in the case of monthly files.   
      
 2. *Handle errors:*    
 - As Google trends has a limit for the amount of files that can be downloaded per day, which is not fixed. 
@@ -116,6 +122,7 @@ In case that the file could not be downloaded an error message would appear in t
 - In order to check if the file should be downloaded or not, it is checked if the file is already in the dropbox folder, in that case it is not downloaded.   
 - In case that the upload to Dropbox fails, the files would be availabe in the data folder configured for monthly and daily. Those files should be uploaded to dropbox manually in the corresponding directory before continue with the process.  
 - The script output indicates if there are more files to download. In the case that all the files have been downloaded, the output would look as follows:     
+
 ```bash
 download_all=True 
 ```
@@ -128,9 +135,15 @@ download_all=False
 
 ```bash
 python main.py -c 'config.properties' --import=true &> output
-```
+```  
+The file output will contain the output from the execution. It can be seen using the following commands:     
 
-The file output will contain the output from the execution.
+```bash
+tail -f output
+```
+```bash
+less output
+```
 
 ### Transform
 For reasons of optimization, the transformation is done during the extraction and loading steps. 
@@ -139,7 +152,7 @@ In the extraction is used to clean the data and in the loading to append the con
 ### Load
 The loading step consist on reading the files for monthly and daily data and generate 2 different types of files. One that contains the information for all the months and other for all the days. The information is appended into one file until reaching the threshold configured in ``output_size_mb``.    
 Once the threshold is reached, the file is uploaded to Dropbox, and start to generate a new file. 
-This process is repeated until all the files have been processed.  
+This process is repeated until all the files have been processed. This should be done for each category.   
 
 **Observations**
 1. *Transformation:* The appended information is sorted by date before uploading the file the information.    
@@ -147,9 +160,22 @@ This process is repeated until all the files have been processed.
 
 
 #### Execution: 
+For executing the script it is necessary to indicate that it corresponds to the process step as well as indicate the category number.  
 
 ```bash
-python main.py -c 'config.properties' --process=true &> output
+python main.py -c 'config.properties' --process=true --num_category=<num> &> output
 ```
 The file output will contain the output from the execution.
-s
+
+The file output will contain the output from the execution. It can be seen using the following command:     
+
+```bash
+tail -f output
+```
+```bash
+less output
+```
+
+
+
+
