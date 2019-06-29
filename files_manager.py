@@ -46,7 +46,7 @@ class FilesManager():
         file_from = local_folder + filename
         file_to = dropbox_folder + filename
         df.to_csv(file_from, index=False)
-        upload_file(file_from, file_to)
+        upload_file(file_from, file_to, dbx)
        
 
     #devide data into chunks and upload to dropbox    
