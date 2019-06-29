@@ -13,7 +13,6 @@ from dropbox_handler import DropboxHandler
 import sys
 import getopt
 import logging
-import os.path
 from os import path
 
 def info():
@@ -24,8 +23,9 @@ def main(argv):
     config_path = ''
     import_data = False
     process_data = False
+    category = ''
     try:
-        opts, args = getopt.getopt(argv,'hi:c:p:',['config=','import=', 'process='])
+        opts, args = getopt.getopt(argv,'hi:c:p:n:',['config=','import=', 'process=', 'num_category='])
     except getopt.GetoptError:
         info()
         sys.exit(2)
@@ -40,6 +40,8 @@ def main(argv):
          import_data = bool(arg)
       elif opt in ('-p','--process'):
           process_data = bool(arg)
+      elif opt in ('-n','--num_category'):
+          category = arg
     
     try:
         config = Config(config_path)
@@ -80,12 +82,13 @@ def main(argv):
     try:    
         #process data and upload to dropbox    
         if(process_data):
-            p = Processor(config.output_size_mb, dbx)
+            p = Processor(config.prefix, config.output_size_mb, dbx)
             p.set_log(log)
-            p.TL_data(config.data_folder_monthly, config.dropbox_folder_upload_monthly, 
-                       config.result_folder, '_monthly.csv')
-            p.TL_data(config.data_folder_daily, config.dropbox_folder_upload_daily, 
-                       config.result_folder, '_daily.csv')
+            p.TL_data(config.data_folder_monthly_dropbox, config.dropbox_folder_upload_monthly, 
+                      config.tmp_folder_monthly, config.result_folder_monthly, 'monthly.csv', category)
+            p.TL_data(config.data_folder_daily_dropbox, config.dropbox_folder_upload_daily, 
+                      config.tmp_folder_daily, config.result_folder_daily, 'daily.csv', category)
+            
     except Exception as ex:
         log.error('There has been an error while processing data.\n%s' %(ex))
         sys.exit(1)
