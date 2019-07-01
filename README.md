@@ -88,17 +88,9 @@ mkdir $HOME/tmp/daily/          # tmp_folder_daily
      ```bash
     qsub $HOME/google-trends/mpi/mpi_import.sh
     ```   
-6. To run the process step, edit mpi_process.sh with the correspondent parameter for category, for example: 
-
-For import:  
+6. To run the process step,  execute:    
     ```bash
-    export CATEGORY=107
-    sed "s/CATEGORY/$CATEGORY/g" $HOME/Google-trends/mpi/mpi_process.sh > $HOME/google-trends/mpi/mpi_$CATEGORY.sh
-    ```
-
-7. Execute the following command to execute the process step for the category edited before:           
-    ```bash
-    qsub $HOME/google-trends/mpi/mpi_$CATEGORY.sh
+    qsub $HOME/google-trends/mpi/mpi_process.sh
     ```   
 
 ### Configuration:

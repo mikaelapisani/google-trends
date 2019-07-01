@@ -13,4 +13,4 @@
 
 module load intel impi
 
-mpirun --machinefile machinefile.$JOB_ID -np 1 sh mpi/run_process.sh CATEGORY
+mpirun --machinefile machinefile.$JOB_ID -np 1 sh mpi/run_process.sh
