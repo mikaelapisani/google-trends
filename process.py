@@ -28,7 +28,7 @@ class Processor:
         index = 0
         #for each file, append until reach threashold
         for filename in filenames:
-            path = data_folder_dropbox + filename
+            path = data_folder_dropbox + category + '/' + filename
             local_path = data_folder + filename
             self.dbx.download_file(path, local_path)
             df = pd.read_csv(local_path)
