@@ -55,6 +55,7 @@ def main(argv):
     
     try:
         dbx = DropboxHandler(config.access_token, config.dropbox_timeout, config.dropbox_chunck)
+        dbx.set_log(log)
     except Exception as ex:
         log.error('There has been an error while initializing dropbox handler.\n%s' %(ex))
         sys.exit(1)
