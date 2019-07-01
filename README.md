@@ -64,9 +64,9 @@ The configuration path would be at '/root/google-trends/config.properties'
    
 2. Create virtualenv:    
     ```bash
+    cd $HOME/google-trends
     . $HOME/conda/etc/profile.d/conda.sh
     conda activate
-    cd $HOME/google-trends
     pip install --upgrade pip
     pip install -r requirements.txt
     conda deactivate
@@ -78,7 +78,7 @@ mkdir $HOME/data/monthly/       # data_folder_monthly
 mkdir $HOME/data/daily/         # data_folder_daily
 mkdir -p $HOME/results/monthly/ # result_folder_monthly
 mkdir $HOME/results/daily/      # result_folder_daily
-mkdir $HOME/tmp/monthly/        # tmp_folder_monthly
+mkdir -p $HOME/tmp/monthly/        # tmp_folder_monthly
 mkdir $HOME/tmp/daily/          # tmp_folder_daily
 ```
 
@@ -130,8 +130,10 @@ Example: 1283:monthly,107:monthly,107:daily,278:monthly,278:daily
 - *retries:* Indicates how many times should retry when the connection fails.   
 - *backoff_factor:* Seconds between attempts after the second retry.  
 - *output_size_mb:* Threshold in MB for the files to be uploaded.  
-- *prefix:* Prefix for the result files.  
-   
+- *prefix:* Prefix for the result files.     
+       
+*Observation:* The folder paths should end with '/'.    s
+
 
 ### Extract
  For the extraction step, csv files are imported from Google Trends, saving them locally in two temporary directories. One directory for monthly files and another for daily files. After downloaded each file is uploaded to dropbox. The temporary files are removed from the local directory once uploaded to dropbox.    
@@ -199,7 +201,7 @@ This process is repeated until all the files have been processed. This should be
 For executing the script it is necessary to indicate that it corresponds to the process step as well as indicate the category number.  
 
 ```bash
-python main.py -c 'config.properties' --process=true --num_category=<num> &> output
+python main.py -c 'config.properties' --process=true  &> output
 ```
 The file output will contain the output from the execution.
 
