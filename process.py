@@ -26,6 +26,11 @@ class Processor:
         filenames = self.dbx.list_files(data_folder_dropbox + category)
         final_df = pd.DataFrame()
         index = 0
+        dropbox_path = dropbox_folder_upload + category 
+        if (not self.dbx.folder_exists(dropbox_path)):
+            self.log.info('Create folder ' + dropbox_path)
+            self.dbx.create_folder(dropbox_path)
+            
         #for each file, append until reach threashold
         for filename in filenames:
             path = data_folder_dropbox + category + '/' + filename
@@ -45,7 +50,7 @@ class Processor:
                 index = self.files_manager.save_data(result_folder,
                                     self.prefix,
                                     sufix,
-                                dropbox_folder_upload,final_df, 
+                                dropbox_folder_upload + category + '/',final_df, 
                                 index, self.dbx)
                 final_df = df
             else:
@@ -59,7 +64,7 @@ class Processor:
             self.files_manager.save_data(result_folder, 
                                     self.prefix,
                                      sufix,
-                                     dropbox_folder_upload,
+                                     dropbox_folder_upload+ category + '/',
                                      final_df, index, self.dbx) 
 
         

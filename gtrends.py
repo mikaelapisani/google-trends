@@ -127,7 +127,7 @@ class GTrends:
                         
                         if(download_all):
                             files_manager.upload_file(data_folder_daily + file_name, 
-                                                           dropbox_path + file_name , 
+                                                           dropbox_path + '/' +  file_name , 
                                                            self.dbx)
                         else:
                             break;
