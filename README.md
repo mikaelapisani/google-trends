@@ -97,13 +97,13 @@ The configuration path would be at '/root/google-trends/config.properties'
     qsub $HOME/google-trends/mpi/mpi_process.sh
     ```   
 
-####**MPI**    
+#### MPI  
 In order to run the jobs in the cluster it is used MPI.    
 It can be found more information about how to run jobs in the cluster in the following link: http://www.depts.ttu.edu/hpcc/userguides/general_guides/job_submission.php     
 In this case it is configured only 1 process as it has to be serial.    
 In the future, the code can be modified in order to process in parallel the information and clean the data faster.   
 
-####**Commands**   
+#### Commands   
 - list jobs: qstat     
 - kill job: qdel <JOB_ID>     
 - see output: tail -f <PROJECT_NAME>.*    
@@ -112,7 +112,7 @@ In the future, the code can be modified in order to process in parallel the info
 The project name is in the file mpi/mpi.sh in the -N parameter: "MPI_gtrends"
 
 
-### Configuration:
+### Configuration   
 **Log Configuration**  
 - log_level: Log level (INFO, WARNING, ERROR)   
 
@@ -152,7 +152,7 @@ Example: 1283:monthly,107:monthly,107:daily,278:monthly,278:daily
 - *output_size_mb:* Threshold in MB for the files to be uploaded.    
 - *prefix:* Prefix for the result files.     
           
-*Observation:* The folder paths should end with '/'.    
+**Observation:** The folder paths should end with '/'.    
 
 
 ### Extraction step
