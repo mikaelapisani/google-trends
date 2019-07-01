@@ -11,8 +11,13 @@ RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 VOLUME /root/data
 VOLUME /root/results
+VOLUME /root/tmp
 
 RUN sed -i 's/tickers_folder=.*$/tickers_folder=\/root\/data\//' config.properties
 RUN sed -i 's/data_folder_monthly=.*$/data_folder_monthly=\/root\/data\/monthly\//' config.properties
 RUN sed -i 's/data_folder_daily=.*$/data_folder_daily=\/root\/data\/daily\//' config.properties
-RUN sed -i 's/result_folder=.*$/result_folder=\/root\/results\//' config.properties
+RUN sed -i 's/tmp_folder_monthly=.*$/tmp_folder_monthly=\/root\/tmp\/monthly\//' config.properties
+RUN sed -i 's/tmp_folder_daily=.*$/tmp_folder_daily=\/root\/tmp\/daily\//' config.properties
+RUN sed -i 's/result_folder_monthly=.*$/result_folder_monthly=\/root\/results\/monthly\//' config.properties
+RUN sed -i 's/result_folder_daily=.*$/result_folder_daily=\/root\/results\/daily\//' config.properties
+
