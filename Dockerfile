@@ -13,6 +13,14 @@ VOLUME /root/data
 VOLUME /root/results
 VOLUME /root/tmp
 
+RUN mkdir -p /root/data/monthly
+RUN mkdir -p /root/data/daily
+RUN mkdir -p /root/results/monthly
+RUN mkdir -p /root/results/daily
+RUN mkdir -p /root/tmp/monthly
+RUN mkdir -p /root/tmp/daily
+
+
 RUN sed -i 's/tickers_folder=.*$/tickers_folder=\/root\/data\//' config.properties
 RUN sed -i 's/data_folder_monthly=.*$/data_folder_monthly=\/root\/data\/monthly\//' config.properties
 RUN sed -i 's/data_folder_daily=.*$/data_folder_daily=\/root\/data\/daily\//' config.properties

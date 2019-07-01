@@ -18,6 +18,8 @@ size (threshold configured).
 It is used the library ``pytrends``.
 - config.properties: Configuration file. 
 - requirements.txt: Requirements for running the environment.   
+- mpi: contains mpi files to execute in the TTU cluster.
+- Dockerfile: to create a docker image.
 
 
 ## Clone repository
@@ -44,6 +46,21 @@ It is necessary to specify 3 volumes, which are the directories for the temporar
 
 Each of those folder should contain 2 directories inside, 'daily' (for daily data) and 'monthly' (for monthly data).
 
+```bash
+docker run -ti -v <data_dir>:/root/data -v <results_dir>:/root/results -v <tmp_dir>:/root/tmp gtrends-etl bash
+```     
+Once inside the container follow the execution manual to execute the program.     
+The configuration path would be at '/root/google-trends/config.properties'. It is needed to change the following parameters:   
+```bash
+tickers_folder=/root/data/tickers.csv
+data_folder_monthly=/root/data/monthly/
+data_folder_daily=/root/data/daily/
+result_folder_monthly=/root/results/monthly/
+result_folder_daily=/root/results/daily/
+tmp_folder_monthly=/root/tmp/monthly/
+tmp_folder_daily=/root/tmp/daily/
+```    
+
 ### Virtualenv
 Substitute {google-trends-path} by the path where the code is downloaded. 
 ```bash
@@ -53,13 +70,6 @@ cd {google-trends-path}
 pip install --upgrade pip
 pip install -r requirements.txt
 ```
-
-```bash
-docker run -ti -v <data_dir>:/root/data -v <results_dir>:/root/results -v <tmp_dir>:/root/tmp gtrends-etl bash
-```     
-Once inside the container follow the execution manual to execute the program.     
-The configuration path would be at '/root/google-trends/config.properties'  
-
 
 ### TTU cluster
 1. It is necessary to have installed conda. 
@@ -89,7 +99,7 @@ The configuration path would be at '/root/google-trends/config.properties'
 4. Edit config.properties file with the corresponding paths.  
   
 5. To run the import step, execute:  
-     ```bash
+    ```bash
     qsub $HOME/google-trends/mpi/mpi_import.sh
     ```   
 6. To run the process step,  execute:    
