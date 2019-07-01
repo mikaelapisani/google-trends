@@ -152,8 +152,9 @@ Example: 1283:monthly,107:monthly,107:daily,278:monthly,278:daily
 - *output_size_mb:* Threshold in MB for the files to be uploaded.    
 - *prefix:* Prefix for the result files.     
           
-**Observation:** The folder paths should end with '/'.    
-
+**Observations:** 
+- The folder paths should end with '/'.  
+- Notice that you can edit in categories, only one category that you want to import/process. Being able to process faster the information in several computers. You can also edit the tickers files, in order to assign chunks of tickers to different computers. 
 
 ### Extraction step
  For the extraction step, csv files are imported from Google Trends, saving them locally in two temporary directories. One directory for monthly files and another for daily files. After downloaded each file is uploaded to dropbox. The temporary files are removed from the local directory once uploaded to dropbox.    
