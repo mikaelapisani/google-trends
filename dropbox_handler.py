@@ -97,7 +97,7 @@ class DropboxHandler:
                     files.append((folder_path, entry.name))
             return files
         except Exception as ex:
-             self.log.error('Error while listing recursive files in folder %s.\n%s' %(folder_path, ex))
+            self.log.error('Error while listing recursive files in folder %s.\n%s' %(folder_path, ex))
             raise ex
     
     def folder_exists(self, path):
@@ -111,15 +111,15 @@ class DropboxHandler:
         try:
             result = self.dbx.files_search(folder_path, filename)
             return (len(result.matches)!=0)
-          except Exception as ex:
-             self.log.error('Error while checking if file %s exists in %s.\n%s' %(filename, folder_path, ex))
+        except Exception as ex:
+            self.log.error('Error while checking if file %s exists in %s.\n%s' %(filename, folder_path, ex))
             raise ex
     
     def delete_file(self, filepath):
         try:
             self.dbx.files_delete(filepath)
-         except Exception as ex:
-             self.log.error('Error while deleting file %s.\n%s' %(filepath, ex))
+        except Exception as ex:
+            self.log.error('Error while deleting file %s.\n%s' %(filepath, ex))
             raise ex
   
 
