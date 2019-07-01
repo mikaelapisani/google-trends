@@ -101,7 +101,7 @@ The configuration path would be at '/root/google-trends/config.properties'
 In order to run the jobs in the cluster it is used MPI.    
 It can be found more information about how to run jobs in the cluster in the following link: http://www.depts.ttu.edu/hpcc/userguides/general_guides/job_submission.php     
 In this case it is configured only 1 process as it has to be serial.    
-In the future, the code can be modified in order to process in parallel the information and clean the data faster.   
+In the future, the code can be modified in order to process in parallel the information and clean the data faster. Meanwhile it could be executed in different computers changing the configuration to import or process different categories.    
 
 #### Commands   
 - list jobs: qstat     
