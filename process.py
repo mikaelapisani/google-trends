@@ -37,8 +37,11 @@ class Processor:
             local_path = data_folder + filename
             self.dbx.download_file(path, local_path)
             self.log.debug('Processing file:%s', local_path)
-            df = pd.read_csv(local_path)
-            if (df.shape[0]==0):
+            try:
+                df = pd.read_csv(local_path)
+                if (df.shape[0]==0):
+                    continue
+            except pd.io.common.EmptyDataError:
                 continue
             
             self.log.debug('Removing ticker column')
