@@ -41,7 +41,7 @@ class Processor:
                 continue
             
             ticker = df['ticker'][0]
-            df['count'] = df[ticker]
+            df.rename(index=str, columns={ticker: 'count'})
             df.drop(ticker, axis=1,inplace=True)
             
             if (self.files_manager.check_chunks(final_df,df)):
