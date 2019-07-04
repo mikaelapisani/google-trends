@@ -37,11 +37,12 @@ class Processor:
             local_path = data_folder + filename
             self.dbx.download_file(path, local_path)
             df = pd.read_csv(local_path)
+            if (df.shape[0]==0):
+                continue
+            
             ticker = df['ticker'][0]
             df['count'] = df[ticker]
             df.drop(ticker, axis=1,inplace=True)
-            if (df.shape[0]==0):
-                continue
             
             if (self.files_manager.check_chunks(final_df,df)):
                 self.log.info('Uploading chunk:%d', index)
