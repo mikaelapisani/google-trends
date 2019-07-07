@@ -40,8 +40,10 @@ class Processor:
             try:
                 df = pd.read_csv(local_path, dtype={'ticker':str})
                 if (df.shape[0]==0):
+                    os.remove(local_path)
                     continue
             except pd.io.common.EmptyDataError:
+                os.remove(local_path)
                 continue
             
             ticker = df['ticker'][0]
