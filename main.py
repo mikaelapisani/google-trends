@@ -46,7 +46,7 @@ def main(argv):
         config = Config(config_path)
         
         #set logging
-        logging.basicConfig(format='%(levelname)s:%(asctime)s - %(message)s')
+        logging.basicConfig(format='%(levelname)s:%(asctime)s - %(pathname)s:%(lineno)d: %(message)s')
         log = logging.getLogger()
         log.setLevel(logging.getLevelName(config.log_level))
     except Exception as ex:

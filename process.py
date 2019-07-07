@@ -36,15 +36,14 @@ class Processor:
             path = data_folder_dropbox + category + '/' + filename
             local_path = data_folder + filename
             self.dbx.download_file(path, local_path)
-            self.log.debug('Processing file:%s', local_path)
+            self.log.info('Processing file:%s', local_path)
             try:
-                df = pd.read_csv(local_path)
+                df = pd.read_csv(local_path, dtype={'ticker':str})
                 if (df.shape[0]==0):
                     continue
             except pd.io.common.EmptyDataError:
                 continue
             
-            self.log.debug('Removing ticker column')
             ticker = df['ticker'][0]
             df.rename(index=str, columns={ticker: 'count'})
             df.drop(ticker, axis=1,inplace=True)
