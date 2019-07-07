@@ -45,8 +45,8 @@ class Processor:
                 continue
             
             ticker = df['ticker'][0]
-            df.rename(index=str, columns={ticker: 'count'})
-            df.drop(ticker, axis=1,inplace=True)
+            df.rename(index=str, columns={ticker: 'count'}, inplace=True)
+            df.drop('ticker', axis=1,inplace=True)
             
             if (self.files_manager.check_chunks(final_df,df)):
                 self.log.info('Uploading chunk:%d', index)
