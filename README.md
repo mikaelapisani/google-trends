@@ -32,7 +32,7 @@ git clone https://github.com/mikaelapisani/google-trends.git
 
 ### Python
 
-Python 3 is required, running the script in a virtualenv with the necessaries dependencies. Alternative, it is provided a Dockerfile in order to run the script in a docker container.
+Python 3 is required, running the script in a virtualenv with the necessary dependencies. Alternative, it is provided a Dockerfile in order to run the script in a docker container.
 
 ### Docker
 Build image:   
