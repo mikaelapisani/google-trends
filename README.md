@@ -32,7 +32,7 @@ git clone https://github.com/mikaelapisani/google-trends.git
 
 ### Python
 
-Python 3 is requeried, running the script in a virtualenv with the necessaries dependencies. Alternative, it is provided a Dockerfile in order to run the script in a docker container.
+Python 3 is required, running the script in a virtualenv with the necessaries dependencies. Alternative, it is provided a Dockerfile in order to run the script in a docker container.
 
 ### Docker
 Build image:   
@@ -44,7 +44,7 @@ It is necessary to specify 3 volumes, which are the directories for the temporar
 - result folder: In case that the upload to dropbox fails, the results files will be at this directory. 
 - tmp folder: In this folder the temporary files are downloaded to be processed. 
 
-Each of those folder should contain 2 directories inside, 'daily' (for daily data) and 'monthly' (for monthly data).
+Each of those folders should contain 2 directories inside, 'daily' (for daily data) and 'monthly' (for monthly data).
 
 ```bash
 docker run -ti -v <data_dir>:/root/data -v <results_dir>:/root/results -v <tmp_dir>:/root/tmp gtrends-etl bash
@@ -73,7 +73,7 @@ pip install -r requirements.txt
 
 ### TTU cluster
 1. It is necessary to have installed conda. 
-   Follow these guide if it is not installed:    
+   Follow this guide if it is not installed:    
    http://www.depts.ttu.edu/hpcc/userguides/application_guides/python.local_installation.php    
    
 2. Create virtualenv:    
@@ -136,7 +136,7 @@ The project name is in the file mpi/mpi.sh in the -N parameter: "MPI_gtrends"
 - *data_folder_daily_dropbox:* Path for raw daily data.   
 
 **Local Configuration**    
-- *tickers_folder:* Local folder's path where ticker file is stored locally. Observe that if you want to download other tickers' list different from the one that is in Dropbox, you can edit this file locally with the list wanted. This can be convinient when you want a smaller list of tickers.      
+- *tickers_folder:* Local folder's path where ticker file is stored locally. Observe that if you want to download another tickers' list different from the one that is in Dropbox, you can edit this file locally with the list wanted. This can be convenient when you want a smaller list of tickers.      
 - *data_folder_monthly:* Local folder's path for monthly data.    
 - *data_folder_daily:* Local folder's path for daily data.    
 - *result_folder:* Local folder's path for results files.  
@@ -179,7 +179,7 @@ Example: 1283:monthly,107:monthly,107:daily,278:monthly,278:daily
 				download_daily(year_from, year_to, ticker, category)
 ```
   
-In summary, for each ticker,category and category type the data is downloaded for the configured frame composed by year_from and year_to and uploaded to dropbox.   
+In summary, for each ticker, category and category type the data is downloaded for the configured frame composed by year_from and year_to and uploaded to dropbox.   
 In dropbox there would be 2 folders: monthly and daily. Inside each folder, there would be a folder per category, and inside this last folder the downloaded files would be available.   
 
  **Observations:**    
@@ -216,7 +216,7 @@ less output
 
 ### Transform step
 For reasons of optimization, the transformation is done during the extraction and loading steps. 
-In the extraction is used to clean the data and in the loading to append the content of the files into one. 
+In the extraction is used to clean the data, and in the loading to append the content of the files into one. 
 
 ### Load step
 The loading step consist on reading the files for monthly and daily data and generate 2 different types of files. One that contains the information for all the months and other for all the days. The information is appended into one file until reaching the threshold configured in ``output_size_mb``.    
